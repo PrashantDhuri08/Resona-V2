@@ -1,0 +1,19 @@
+[project]
+name = "resona-v2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.123.3",
+    "ipykernel>=7.1.0",
+    "jupyter>=1.1.1",
+    "librosa>=0.11.0",
+    "matplotlib>=3.10.7",
+    "numpy>=2.3.5",
+    "pandas>=2.3.3",
+    "scipy>=1.16.3",
+    "sounddevice>=0.5.3",
+    "soundfile>=0.13.1",
+    "uvicorn>=0.38.0",
+]

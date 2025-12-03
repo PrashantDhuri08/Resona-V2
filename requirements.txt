@@ -1,0 +1,12 @@
+librosa
+numpy
+uvicorn
+fastapi
+matplotlib
+
+
+ipykernel
+pandas
+
+
+sounddevice
