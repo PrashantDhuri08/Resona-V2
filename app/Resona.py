@@ -16,6 +16,9 @@ TARGET_WINDOW = 100
 SONG_FOLDER = "../songs"
 DB_PATH = "fingerprints.db"
 
+# SONG_FOLDER = "./spotify/songs"
+# DB_PATH = "./spotify/fingerprints.db"
+
 conn = sqlite3.connect(DB_PATH)
 c = conn.cursor()
 
@@ -68,7 +71,38 @@ def generate_hashes(peaks):
 
 
 
-def add_song(song_id, path):
+# def add_song(song_id, path):
+
+def add_song(path):
+    name = os.path.basename(path)
+
+    # check if this song (by name) is already in DB
+    c.execute("SELECT id FROM songs WHERE name=?", (name,))
+    row = c.fetchone()
+    if row:
+        print(f"Skipping {name}, already indexed (id={row[0]}).")
+        return
+
+    # insert new song row, get its id
+    c.execute("INSERT INTO songs(name) VALUES (?)", (name,))
+    song_id = c.lastrowid
+
+    # fingerprint
+    S_db = get_spectrogram(path)
+    peaks = get_peaks(S_db)
+
+    rows = []
+    for h, t in generate_hashes(peaks):
+        rows.append((h, song_id, t))
+
+    c.executemany(
+        "INSERT INTO fingerprints(hash, song_id, time) VALUES (?,?,?)",
+        rows,
+    )
+    conn.commit()
+
+    print(f"Indexed {name}: {len(rows)} hashes (id={song_id})")
+
     name = os.path.basename(path)
     # skip if already indexed
     c.execute("SELECT 1 FROM songs WHERE id=?", (song_id,))
@@ -116,4 +150,5 @@ def recognize(path):
     c.execute("SELECT name FROM songs WHERE id=?", (best_song,))
     row = c.fetchone()
     return (row[0] if row else best_song), best_score
+
 
