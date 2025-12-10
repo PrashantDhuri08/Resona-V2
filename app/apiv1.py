@@ -156,6 +156,7 @@ async def addfromyt(payload : Song):
             'preferredquality': '192',
         }],
         'outtmpl': '../songs/%(title)s.%(ext)s',
+        'cookiefile': '/etc/secrets/cookies.txt',  
         
         }
 
